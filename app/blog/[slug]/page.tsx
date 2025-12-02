@@ -12,6 +12,30 @@ interface PostPageProps {
   }>;
 }
 
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  date: string;
+  slug: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+  tags: {
+    nodes: {
+      name: string;
+    }[];
+  };
+}
+
+interface GraphQLResponse {
+  post: Post | null;
+}
+
 // GraphQL query for single post
 const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: ID!) {
@@ -42,7 +66,7 @@ export async function generateMetadata({
   params,
 }: PostPageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  const { data } = await client.query({
+  const { data } = await client.query<GraphQLResponse>({
     query: GET_POST_BY_SLUG,
     variables: { slug: resolvedParams.slug },
   });
@@ -85,7 +109,7 @@ export async function generateMetadata({
 
 export default async function PostPage({ params }: PostPageProps) {
   const resolvedParams = await params;
-  const { data } = await client.query({
+  const { data } = await client.query<GraphQLResponse>({
     query: GET_POST_BY_SLUG,
     variables: { slug: resolvedParams.slug },
   });

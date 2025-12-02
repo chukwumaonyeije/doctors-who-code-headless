@@ -3,8 +3,34 @@ import { gql } from "@apollo/client";
 import PostCard from "@/components/PostCard";
 import Link from "next/link";
 
+interface Post {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  slug: string;
+  content: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+  tags: {
+    nodes: {
+      name: string;
+    }[];
+  };
+}
+
+interface AllPostsResponse {
+  posts: {
+    nodes: Post[];
+  };
+}
+
 export default async function Home() {
-  const { data } = await client.query({
+  const { data } = await client.query<AllPostsResponse>({
     query: gql`
       query AllPosts {
         posts {

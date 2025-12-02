@@ -1,0 +1,6 @@
+name: Install Dependencies
+command: npm install
+tags:
+  - setup
+  - install
+description: Install all npm dependencies

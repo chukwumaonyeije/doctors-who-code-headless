@@ -1,0 +1,10 @@
+name: Git Commit
+command: git add . && git commit -m "{{message}}"
+tags:
+  - git
+  - commit
+description: Stage all changes and commit with a message
+arguments:
+  - name: message
+    description: Commit message
+    default_value: "Update code"

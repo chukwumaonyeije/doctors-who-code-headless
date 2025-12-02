@@ -1,0 +1,6 @@
+name: Run Linter
+command: npm run lint
+tags:
+  - lint
+  - quality
+description: Run ESLint to check code quality

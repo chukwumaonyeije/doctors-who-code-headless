@@ -1,0 +1,7 @@
+name: Deploy to Vercel
+command: npm run build && vercel --prod
+tags:
+  - deploy
+  - vercel
+  - production
+description: Build and deploy the project to Vercel

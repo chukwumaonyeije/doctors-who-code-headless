@@ -58,6 +58,15 @@ export default async function Home() {
     `,
   });
 
+  if (!data || !data.posts) {
+    return (
+      <main className="max-w-4xl mx-auto py-16 px-6 text-center">
+        <h1 className="text-4xl font-bold text-white mb-4">No posts found</h1>
+        <p className="text-slate-400">Check back soon for new content!</p>
+      </main>
+    );
+  }
+
   const posts = data.posts.nodes;
   const featuredPost = posts[0]; // Most recent post
   const otherPosts = posts.slice(1); // Rest of the posts

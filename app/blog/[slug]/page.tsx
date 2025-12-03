@@ -224,7 +224,8 @@ export default async function PostPage({ params }: PostPageProps) {
     </article>
   );
   } catch (error) {
-    console.error('Error loading post:', error);
+    const resolvedParams = await params;
+    console.error(`Error loading post with slug "${resolvedParams.slug}":`, error);
     return (
       <div className="max-w-4xl mx-auto py-16 px-6 text-center">
         <h1 className="text-4xl font-bold text-white mb-4">Unable to Load Post</h1>

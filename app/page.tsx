@@ -33,7 +33,7 @@ export default async function Home() {
   const { data } = await client.query<AllPostsResponse>({
     query: gql`
       query AllPosts {
-        posts {
+        posts(first: 100) {
           nodes {
             id
             title
@@ -143,6 +143,13 @@ export default async function Home() {
             {otherPosts.map((post: any) => (
               <PostCard key={post.id} post={post} />
             ))}
+          </div>
+          
+          {/* View Archive Link */}
+          <div className="mt-12 text-center">
+            <p className="text-slate-400 mb-4">
+              Showing {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+            </p>
           </div>
         </section>
       )}

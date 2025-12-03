@@ -65,17 +65,20 @@ const GET_POST_BY_SLUG = gql`
 export async function generateMetadata({
   params,
 }: PostPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const { data } = await client.query<GraphQLResponse>({
-    query: GET_POST_BY_SLUG,
-    variables: { slug: resolvedParams.slug },
-  });
+  try {
+    const resolvedParams = await params;
+    const { data } = await client.query<GraphQLResponse>({
+      query: GET_POST_BY_SLUG,
+      variables: { slug: resolvedParams.slug },
+      errorPolicy: 'all',
+      fetchPolicy: 'network-only',
+    });
 
-  if (!data?.post) {
-    return {
-      title: "Post Not Found",
-    };
-  }
+    if (!data?.post) {
+      return {
+        title: "Post Not Found",
+      };
+    }
 
   const post = data.post;
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://doctorswhocode.blog";
@@ -105,18 +108,28 @@ export async function generateMetadata({
       images: [post.featuredImage?.node.sourceUrl || ""],
     },
   };
+  } catch (error) {
+    console.error('Error fetching post metadata:', error);
+    return {
+      title: "Post Not Found",
+      description: "Unable to load this post. Please try again later.",
+    };
+  }
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const resolvedParams = await params;
-  const { data } = await client.query<GraphQLResponse>({
-    query: GET_POST_BY_SLUG,
-    variables: { slug: resolvedParams.slug },
-  });
+  try {
+    const resolvedParams = await params;
+    const { data } = await client.query<GraphQLResponse>({
+      query: GET_POST_BY_SLUG,
+      variables: { slug: resolvedParams.slug },
+      errorPolicy: 'all',
+      fetchPolicy: 'network-only',
+    });
 
-  if (!data?.post) {
-    notFound();
-  }
+    if (!data?.post) {
+      notFound();
+    }
 
   const post = data.post;
   const readingTime = calculateReadingTime(post.content);
@@ -210,4 +223,20 @@ export default async function PostPage({ params }: PostPageProps) {
       </div>
     </article>
   );
+  } catch (error) {
+    console.error('Error loading post:', error);
+    return (
+      <div className="max-w-4xl mx-auto py-16 px-6 text-center">
+        <h1 className="text-4xl font-bold text-white mb-4">Unable to Load Post</h1>
+        <p className="text-slate-400 mb-6">We're having trouble connecting to the server. Please try again later.</p>
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-all"
+        >
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+      </div>
+    );
+  }
 }

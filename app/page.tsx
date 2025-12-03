@@ -31,6 +31,7 @@ interface AllPostsResponse {
 
 export default async function Home() {
   const { data } = await client.query<AllPostsResponse>({
+    fetchPolicy: 'network-only',
     query: gql`
       query AllPosts {
         posts(first: 100) {

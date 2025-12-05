@@ -30,34 +30,48 @@ interface AllPostsResponse {
 }
 
 export default async function Home() {
-  const { data } = await client.query<AllPostsResponse>({
-    fetchPolicy: 'network-only',
-    query: gql`
-      query AllPosts {
-        posts(first: 100) {
-          nodes {
-            id
-            title
-            excerpt
-            date
-            slug
-            content
-            featuredImage {
-              node {
-                sourceUrl
-                altText
+  let data;
+  
+  try {
+    const result = await client.query<AllPostsResponse>({
+      fetchPolicy: 'network-only',
+      query: gql`
+        query AllPosts {
+          posts(first: 100) {
+            nodes {
+              id
+              title
+              excerpt
+              date
+              slug
+              content
+              featuredImage {
+                node {
+                  sourceUrl
+                  altText
+                }
               }
-            }
-            tags {
-              nodes {
-                name
+              tags {
+                nodes {
+                  name
+                }
               }
             }
           }
         }
-      }
-    `,
-  });
+      `,
+    });
+    data = result.data;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    // Return a fallback UI when WordPress is unavailable
+    return (
+      <main className="max-w-4xl mx-auto py-16 px-6 text-center">
+        <h1 className="text-4xl font-bold text-white mb-4">Site Temporarily Unavailable</h1>
+        <p className="text-slate-400">We're experiencing technical difficulties. Please check back soon!</p>
+      </main>
+    );
+  }
 
   if (!data || !data.posts) {
     return (

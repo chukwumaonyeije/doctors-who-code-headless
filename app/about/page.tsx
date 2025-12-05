@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About - Dr. Chukwuma Onyeije | Doctors Who Code",
@@ -10,9 +11,23 @@ export default function AboutPage() {
     <article className="max-w-4xl mx-auto py-16 px-6">
       {/* Header */}
       <header className="mb-12">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 leading-tight">
-          Who Am I?
-        </h1>
+        <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
+          <div className="flex-shrink-0">
+            <Image
+              src="/dr-onyeije.jpg"
+              alt="Dr. Chukwuma Onyeije"
+              width={280}
+              height={280}
+              className="rounded-2xl shadow-2xl border-2 border-primary/30"
+              priority
+            />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 leading-tight">
+              Who Am I?
+            </h1>
+          </div>
+        </div>
       </header>
 
       {/* Content */}

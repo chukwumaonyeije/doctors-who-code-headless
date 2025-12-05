@@ -14,7 +14,7 @@ export default function ContactForm() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
@@ -192,7 +192,7 @@ export default function ContactForm() {
       </div>
 
       {/* Error Message */}
-      {state.errors && state.errors.length > 0 && (
+      {state.errors && Object.keys(state.errors).length > 0 && (
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
           There was an error sending your message. Please try again.
         </div>

@@ -36,6 +36,9 @@ interface GraphQLResponse {
   post: Post | null;
 }
 
+// Revalidate every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 // GraphQL query for single post
 const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: ID!) {

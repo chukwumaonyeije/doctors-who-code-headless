@@ -29,6 +29,9 @@ interface AllPostsResponse {
   };
 }
 
+// Revalidate every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 export default async function Home() {
   let data;
   

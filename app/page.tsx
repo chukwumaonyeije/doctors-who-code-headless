@@ -1,6 +1,7 @@
 import client from "@/lib/graphql-client";
 import { gql } from "@apollo/client";
 import PostCard from "@/components/PostCard";
+import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
 
 interface Post {
@@ -97,9 +98,10 @@ export default async function Home() {
           <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 leading-tight">
             Doctors Who Code
           </h1>
-          <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
             Where medicine meets technology. Empowering physicians to build tools that transform healthcare.
           </p>
+          <SearchBar />
         </div>
 
         {/* Featured Post */}

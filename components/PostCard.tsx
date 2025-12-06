@@ -37,7 +37,7 @@ export default function PostCard({ post }: PostCardProps) {
       <article className="bg-surface/60 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:border-primary hover:shadow-primary/20 transition-all duration-300 group">
         
         {/* Featured Image */}
-        {post.featuredImage && (
+        {post.featuredImage?.node?.sourceUrl && (
           <div className="relative h-64 w-full overflow-hidden">
             <Image
               src={post.featuredImage.node.sourceUrl}

@@ -2,6 +2,7 @@ import client from "@/lib/graphql-client";
 import { gql } from "@apollo/client";
 import PostCard from "@/components/PostCard";
 import SearchBar from "@/components/SearchBar";
+import Pagination from "@/components/Pagination";
 import Link from "next/link";
 
 interface Post {
@@ -33,7 +34,14 @@ interface AllPostsResponse {
 // Revalidate every 60 seconds (ISR - Incremental Static Regeneration)
 export const revalidate = 60;
 
-export default async function Home() {
+const POSTS_PER_PAGE = 12;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
+  const currentPage = Number(searchParams.page) || 1;
   let data;
   
   try {
@@ -68,7 +76,6 @@ export default async function Home() {
     data = result.data;
   } catch (error) {
     console.error('Error fetching posts:', error);
-    // Return a fallback UI when WordPress is unavailable
     return (
       <main className="max-w-4xl mx-auto py-16 px-6 text-center">
         <h1 className="text-4xl font-bold text-white mb-4">Site Temporarily Unavailable</h1>
@@ -86,13 +93,19 @@ export default async function Home() {
     );
   }
 
-  const posts = data.posts.nodes;
-  const featuredPost = posts[0]; // Most recent post
-  const otherPosts = posts.slice(1); // Rest of the posts
+  const allPosts = data.posts.nodes;
+  const totalPosts = allPosts.length;
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+  
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const endIndex = startIndex + POSTS_PER_PAGE;
+  const posts = allPosts.slice(startIndex, endIndex);
+  
+  const startPost = startIndex + 1;
+  const endPost = Math.min(endIndex, totalPosts);
 
   return (
     <main>
-      {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
           <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 leading-tight">
@@ -104,20 +117,6 @@ export default async function Home() {
           <SearchBar />
         </div>
 
-        {/* Featured Post */}
-        {featuredPost && (
-          <div className="mb-20">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-white">Latest Post</h2>
-              <span className="px-4 py-2 bg-primary/20 text-primary text-sm font-semibold rounded-full border border-primary/30">
-                NEW
-              </span>
-            </div>
-            <PostCard post={featuredPost} />
-          </div>
-        )}
-
-        {/* About Preview */}
         <div className="bg-gradient-to-r from-surface/60 to-surface/40 border border-slate-700 rounded-2xl p-8 md:p-12 mb-20">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
@@ -155,22 +154,24 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Recent Posts Section */}
-      {otherPosts.length > 0 && (
+      {posts.length > 0 && (
         <section className="max-w-4xl mx-auto px-6 pb-16">
-          <h2 className="text-3xl font-bold text-white mb-8">More Posts</h2>
+          <h2 className="text-3xl font-bold text-white mb-8">
+            {currentPage === 1 ? 'Latest Posts' : `Posts - Page ${currentPage}`}
+          </h2>
           <div className="space-y-6">
-            {otherPosts.map((post: any) => (
+            {posts.map((post: Post) => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
           
-          {/* View Archive Link */}
-          <div className="mt-12 text-center">
+          <div className="mt-8 text-center">
             <p className="text-slate-400 mb-4">
-              Showing {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+              Showing {startPost}-{endPost} of {totalPosts} {totalPosts === 1 ? 'post' : 'posts'}
             </p>
           </div>
+          
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
         </section>
       )}
     </main>

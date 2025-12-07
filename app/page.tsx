@@ -39,9 +39,10 @@ const POSTS_PER_PAGE = 12;
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const currentPage = Number(searchParams.page) || 1;
+  const resolvedParams = await searchParams;
+  const currentPage = Number(resolvedParams.page) || 1;
   let data;
   
   try {
